@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import br.com.servidor.nomadesvirtuais.database.DatabaseConnector;
 import br.com.servidor.nomadesvirtuais.models.Client;
 
 //import server.GerenciadorDeConexoes;
@@ -18,14 +19,17 @@ public class Server {
 
 		try {
 			startServer();
+			DatabaseConnector.openConnection();
 			waitNewConections();
 			stopServer();
 		} catch (Exception e) {
 			stopServer();
+			DatabaseConnector.closeConnection();
 			System.err.println("Em main() classe Servidor: " + e.getCause());
 			e.printStackTrace();
 		} finally {
 			stopServer();
+			DatabaseConnector.closeConnection();
 		}
 	}
 

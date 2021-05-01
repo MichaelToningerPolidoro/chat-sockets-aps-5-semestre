@@ -1,5 +1,7 @@
 package br.com.servidor.nomadesvirtuais.database;
 
+import java.sql.Connection;
+
 public class DatabaseQueries {
 
 	/*
@@ -10,25 +12,22 @@ public class DatabaseQueries {
 	 * das chamadas SLQ, apenas passando alguns parâmetros
 	 * */
 	
-	private DatabaseConnector dbConnector;
+	// Conexão referente à conexão do DatabaseConnector get conexao;
+	private Connection connection;
 	
 	public DatabaseQueries() {
 		// TODO construtor dessa classe
+		connection = DatabaseConnector.getConnection();
 	}
 	
-	private void stopDatabaseConnection() {
-		// TODO realizar a parada da conexão com o DB
-
-	}
-	
-	private void saveMessage() {
+	private void saveMessage(String message) {
 		// TODO realizar uma query que salva uma mensagem
 		// provávelmente chamando a procedure/function
 
 	}
 	
-	private void getProcessedMessage() {
+	private String getProcessedMessage() {
 		// TODO obter um retorno com a mensagem tratada
-
+		return "";
 	}
 }

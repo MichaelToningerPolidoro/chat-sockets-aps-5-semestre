@@ -12,6 +12,8 @@ public class ServerManager extends Thread {
 	private static final List<ServerManager> connectedClients = 
 			new ArrayList<>();
 	
+	// criar atributo que guarda um databaseQueries
+	
 	public ServerManager(Client client) {
 		this.client = client;
 		System.out.println("Conexão aceita em ServerManager");
