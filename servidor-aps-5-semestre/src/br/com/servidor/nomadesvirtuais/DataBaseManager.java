@@ -5,16 +5,14 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DataBaseManager {
-
-	private final String url = "jdbc:mysql://localhost";
-	private final String user = "root";
-	private final String password = "root123";
 	
-	public DataBaseManager() {
+	public static void main(String[] args) {
 		try {
-			Connection connection = DriverManager.getConnection(url, user, password);
+			Connection connection = DriverManager.getConnection("");
+			connection.close();
+			System.out.println("Fim, sucesso!");
 		} catch (SQLException e) {
-			System.err.println("Em construtor DataBaseManager(): SQLException");
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
