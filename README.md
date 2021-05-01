@@ -7,6 +7,7 @@
   2. [Integrantes](#integrantes)
   3. [Tecnologias utilizadas](#tecnologias-utilizadas)
   4. [Conceitos aprendidos](#conceitos-aprendidos)
+  5. [Configurações necessárias](#configuracoes-necessarias)
 
 ***
 
@@ -27,3 +28,9 @@
 ## <a name="conceitos-aprendidos">4. Conceitos aprendidos</a>
 
   <br/><br/>[Voltar ao índice](#indice)
+  
+## <a name="configuracoes-necessarias">5. Configurações necessárias</a>
+  Algumas configurações são necessárias para o funcionamento do projeto, sendo elas:  
+  - Criar aquivo database.properties no caminho `servidor-aps-5-semestre/src/br/com/servidor/nomadesvirtuais/utils/`
+  - Adicionar propriedades com o seguinte formato `db.url`, `db.user`, `db.password`
+  <br></br>[Voltar ao índice](#indice)
