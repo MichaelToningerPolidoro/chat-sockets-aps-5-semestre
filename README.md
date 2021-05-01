@@ -31,6 +31,7 @@
   
 ## <a name="configuracoes-necessarias">5. Configurações necessárias</a>
   Algumas configurações são necessárias para o funcionamento do projeto, sendo elas:  
-  - Criar aquivo database.properties no caminho `servidor-aps-5-semestre/src/br/com/servidor/nomadesvirtuais/utils/`
+  - Criar aquivo database.properties no caminho `servidor-aps-5-semestre/src/database.properties`
   - Adicionar propriedades com o seguinte formato `db.url`, `db.user`, `db.password`
+  
   <br></br>[Voltar ao índice](#indice)
