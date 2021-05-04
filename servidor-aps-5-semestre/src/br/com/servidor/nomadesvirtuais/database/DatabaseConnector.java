@@ -12,7 +12,8 @@ public class DatabaseConnector {
 	
 	/*
 	 * Essa classe é responsável pela conexão com o banco de dados
-	 * Ela possui apenas 1 instãncia
+	 * Ela possui apenas 1 instância do atributo connection
+	 * assim sempre que for chamada, possui apenas essa conexão com o DB
 	 * */
 	
 	private static Connection connection;
@@ -62,7 +63,6 @@ public class DatabaseConnector {
 				openConnection();
 				return connection;
 			} else if (!connection.isClosed()) {
-				System.err.println("retornando conexão já existente");
 				return connection;			
 			}
 		} catch (SQLException e) {

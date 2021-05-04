@@ -20,14 +20,26 @@ public class DatabaseQueries {
 		connection = DatabaseConnector.getConnection();
 	}
 	
-	private void saveMessage(String message) {
+	public void saveMessage(String message) {
 		// TODO realizar uma query que salva uma mensagem
 		// provávelmente chamando a procedure/function
+		System.out.println("Salvando mensagem no db ...");
 
 	}
 	
-	private String getProcessedMessage() {
+	public String getProcessedMessage() {
 		// TODO obter um retorno com a mensagem tratada
+		// através da function criada pela Raquel
+		System.out.println("Obtendo mensagem processada ...");
 		return "";
 	}
+	
+	public boolean login(String user, String password) {
+		// TODO: implementar método de login no projeto
+		// Realiza a busca do usuário no DB e retorna
+		// true se as informações forem válidas.
+		
+		return true;
+	}
+	
 }
