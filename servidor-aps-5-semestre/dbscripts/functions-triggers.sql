@@ -1,9 +1,7 @@
-/*Adicionar isso sempre que for iniciar o servidor, para aceitar a criação de Functions*/
+USE `aps-5-semestre`;
 SET GLOBAL log_bin_trust_function_creators = 1;
 
-USE `aps-5-semestre`;
-
-DELIMITER //
+DELIMITER $$
 
 CREATE FUNCTION REPLACE_RESTRICTED_WORDS(p_TEXT VARCHAR(1000))
 RETURNS VARCHAR(1000)
@@ -13,63 +11,67 @@ DECLARE	v_INDEX BIGINT DEFAULT 0;
 DECLARE	v_FINDER CHAR(1);
 DECLARE v_CURRENTWORD VARCHAR(1000);
 DECLARE v_WORDRESTRICT VARCHAR(40);
+WHILE p_TEXT <> '' DO	
+SET v_INDEX = REGEXP_INSTR(p_TEXT, '[^a-zA-Z0-9]');
 
-WHILE p_TEXT <> ''
-DO	
-SET v_INDEX = instr('%[^a-zA-Z0-9]%',p_TEXT);
-		IF v_INDEX>0 
-		THEN
 			SET v_FINDER = SUBSTRING(p_TEXT,v_INDEX,1);
-		
-			SET v_CURRENTWORD = CASE WHEN v_INDEX > 0 THEN SUBSTRING(p_TEXT, 0, v_INDEX) ELSE p_TEXT END;	
-
-			IF EXISTS (SELECT PALAVRA FROM PALAVRASRESTRITAS WHERE LOCATE(PALAVRA, v_CURRENTWORD) > 0)
-				THEN
-				SET v_WORDRESTRICT = (SELECT REPLACE(v_CURRENTWORD, PALAVRA, '***') FROM PALAVRASRESTRITAS WHERE LOCATE(PALAVRA, v_CURRENTWORD) > 0);
-				SET v_NEWTEXT = CONCAT(v_NEWTEXT , v_WORDRESTRICT + v_FINDER);
+            
+			IF v_FINDER = ''
+			THEN
+				SET v_CURRENTWORD = CASE WHEN v_INDEX > 0 THEN SUBSTRING_INDEX(p_TEXT, SPACE(1), 1) ELSE p_TEXT END;
 			ELSE
-				SET v_NEWTEXT = CONCAT(v_NEWTEXT , v_CURRENTWORD + v_FINDER);
+				SET v_CURRENTWORD = CASE WHEN v_INDEX > 0 THEN SUBSTRING_INDEX(p_TEXT, v_FINDER, 1) ELSE p_TEXT END;					
 			END IF;
+			            
+			IF EXISTS (SELECT palavra FROM palavrasrestritas WHERE LOCATE(palavra, v_CURRENTWORD) > 0 ) THEN
+				SET v_WORDRESTRICT = (SELECT REPLACE(lower(v_CURRENTWORD), palavra, '***') FROM palavrasrestritas WHERE LOCATE(palavra, v_CURRENTWORD) > 0);
+            ELSE
+				SET v_WORDRESTRICT = v_CURRENTWORD;
+            END IF;
 
-	
-			IF v_INDEX = 0
+				IF v_FINDER = ''
 				THEN
+					SET v_NEWTEXT = CONCAT(v_NEWTEXT , v_WORDRESTRICT, SPACE(1));
+				ELSE
+					SET v_NEWTEXT = CONCAT(v_NEWTEXT , v_WORDRESTRICT, v_FINDER);
+				END IF;
+                
+			IF v_INDEX = 0 THEN
 					SET p_TEXT = '';
 			ELSE
 					SET p_TEXT = SUBSTRING(p_TEXT, v_INDEX+1, CHAR_LENGTH(RTRIM(p_TEXT))+2);
-				END IF;
-		END IF;
-
+			END IF;	
+            
 END WHILE;
 SET v_NEWTEXT = RTRIM(v_NEWTEXT);
 
 RETURN v_NEWTEXT;
-END //
+END;$$
 
 DELIMITER ;
 
-SELECT REPLACE_RESTRICTED_WORDS('Testandooooo teste0 sql alguma coisa select delete');
-DROP FUNCTION IF EXISTS REPLACE_RESTRICTED_WORDS;
+select `aps-5-semestre`.REPLACE_RESTRICTED_WORDS('asfasf a.sfasfa .insert ASIHUASFNJ DELETE') as 'restricted';
 
-DELIMITER 
- 
-CREATE TRIGGER dbo.INSERTED_WITH_RESTRICTED_WORDS
-BEFORE INSERT
-ON dbo.mensagens FOR EACH ROW
+/*--------------------------------------*/
+/*                Trigger               */
+/*--------------------------------------*/
+USE `aps-5-semestre`;
+DROP TRIGGER IF EXISTS `aps-5-semestre`.INSERTED_WITH_RESTRICTED_WORDS;
+
+DELIMITER $
+
+CREATE TRIGGER INSERTED_WITH_RESTRICTED_WORDS BEFORE INSERT
+ON mensagens
+FOR EACH ROW
 BEGIN
-DECLARE v_MensagemInserted VARCHAR(1000) DEFAULT (SELECT mensagem from inserted);
-DECLARE v_ID_Usuario INT DEFAULT (SELECT id_usuario from inserted);
-DECLARE v_Data_Enviado DATETIME(3) DEFAULT (SELECT enviado_em from inserted);
-DECLARE v_Mensagem_Restricted VARCHAR(1000) DEFAULT [dbo].[REPLACE_RESTRICTED_WORDS](v_MensagemInserted);
+SET NEW.mensagem  = (SELECT `aps-5-semestre`.REPLACE_RESTRICTED_WORDS(NEW.mensagem));
+END$
 
-INSERT INTO mensagens
-           (mensagem
-           ,enviado_em
-           ,id_usuario)
-     VALUES
-           (v_Mensagem_Restricted
-           ,v_Data_Enviado
-           ,v_ID_Usuario)
-END $$
+/*     Testes     */
+insert into mensagens(mensagem, id_usuario) values ("heheh testes e testes DELETE", 1);
+select * from mensagens;
+insert into usuarios(nome_completo, ativo, codigo) values ("Teste", false, "abc1234");
 
-DELIMITER ;
+SELECT mensagem FROM mensagens ORDER BY id DESC LIMIT 1;
+
+DELETE FROM mensagens where id > 0;

@@ -1,6 +1,10 @@
 package br.com.servidor.nomadesvirtuais.database;
 
 import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class DatabaseQueries {
 
@@ -28,10 +32,46 @@ public class DatabaseQueries {
 	}
 	
 	public String getProcessedMessage() {
-		// TODO obter um retorno com a mensagem tratada
-		// através da function criada pela Raquel
-		System.out.println("Obtendo mensagem processada ...");
-		return "";
+		// query que traz a última mensagem salva
+		String sql = "SELECT mensagem FROM mensagens ORDER BY id DESC LIMIT 1;";
+		PreparedStatement stmt = null;
+		String processedMessage = null;
+		
+		try {
+			stmt = connection.prepareStatement(sql);
+			ResultSet result = stmt.executeQuery();
+			
+			if (result.next()) {
+				processedMessage = result.getString(1);				
+			}
+			
+			stmt.close();
+			result.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return processedMessage;
+	}
+	
+	public String processMessage(String message) {
+		try {
+			String sql = "INSERT INTO mensagens(mensagem, enviado_em, id_usuario) VALUES (?, ?, ?)";
+			PreparedStatement stmt = connection.prepareStatement(sql);
+			stmt.setString(1, message);
+			stmt.setDate(2, null);
+			stmt.setInt(3, 1);
+			stmt.execute();
+			stmt.close();
+			
+			message = getProcessedMessage();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return message;
 	}
 	
 	public boolean login(String user, String password) {
