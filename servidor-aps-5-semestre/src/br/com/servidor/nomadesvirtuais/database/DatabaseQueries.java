@@ -20,19 +20,27 @@ public class DatabaseQueries {
 	private Connection connection;
 	
 	public DatabaseQueries() {
-		// TODO construtor dessa classe
 		connection = DatabaseConnector.getConnection();
 	}
 	
-	public void saveMessage(String message) {
-		// TODO realizar uma query que salva uma mensagem
-		// provávelmente chamando a procedure/function
-		System.out.println("Salvando mensagem no db ...");
-
+	public void saveMessage(String message, int userId) {
+		try {
+			String sql = "INSERT INTO mensagens(mensagem, id_usuario) VALUES (?, ?)";
+			PreparedStatement stmt = connection.prepareStatement(sql);
+			stmt.setString(1, message);
+			stmt.setInt(2, userId);
+			stmt.execute();
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
-	public String getProcessedMessage() {
+	// TODO: Mudar para retornar um MEssage
+	public String getLastProcessedMessage() {
 		// query que traz a última mensagem salva
+		// TODO: Mudar para trazer horário também, assim da para montar um
+		// obj message e assim retornar para o processMessage();
 		String sql = "SELECT mensagem FROM mensagens ORDER BY id DESC LIMIT 1;";
 		PreparedStatement stmt = null;
 		String processedMessage = null;
@@ -42,7 +50,8 @@ public class DatabaseQueries {
 			ResultSet result = stmt.executeQuery();
 			
 			if (result.next()) {
-				processedMessage = result.getString(1);				
+				processedMessage = result.getString(1);
+				//result.getTime("enviado_em").toString();
 			}
 			
 			stmt.close();
@@ -55,22 +64,10 @@ public class DatabaseQueries {
 		return processedMessage;
 	}
 	
-	public String processMessage(String message) {
-		try {
-			String sql = "INSERT INTO mensagens(mensagem, enviado_em, id_usuario) VALUES (?, ?, ?)";
-			PreparedStatement stmt = connection.prepareStatement(sql);
-			stmt.setString(1, message);
-			stmt.setDate(2, null);
-			stmt.setInt(3, 1);
-			stmt.execute();
-			stmt.close();
-			
-			message = getProcessedMessage();
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
+	// TODO: Mudar para retornar um obj Message
+	public String processMessage(String message, int userId) {
+		saveMessage(message, userId);
+		message = getLastProcessedMessage();
 		return message;
 	}
 	

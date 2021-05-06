@@ -1,9 +1,11 @@
 package br.com.servidor.nomadesvirtuais;
 
 import java.net.SocketException;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.servidor.nomadesvirtuais.database.DatabaseConnector;
 import br.com.servidor.nomadesvirtuais.models.Client;
 
 public class ServerManager extends Thread {
@@ -12,13 +14,15 @@ public class ServerManager extends Thread {
 	private static final List<ServerManager> connectedClients = 
 			new ArrayList<>();
 	
+	private static final Connection connection = 
+			DatabaseConnector.getConnection();
+	
 	// criar atributo que guarda um databaseQueries
 	
 	public ServerManager(Client client) {
 		this.client = client;
-		System.out.println("Conexão aceita em ServerManager");
 		connectedClients.add(this);
-		System.out.println("Tamanho lista conectados: " + connectedClients.size());
+		System.out.println(String.format("Usuário conectado -> %s", this.client));
 		start();
 	}
 	
@@ -43,6 +47,12 @@ public class ServerManager extends Thread {
 	
 	private void sendMessageToAllConnectedClients(String sender, String message) {
 		StringBuffer sb;
+//		Alterar recebimento desse método para String message
+//		chama o metodo que processa mensagem no BD
+//			passando (String message, int client.getId())
+//		Com isso é retornado um objeto de Message, contendo a mensagem e o horário.
+//		por fim é chamado o setSender(client.getName()) para definir quem está mandando e então
+//		realiza a iteração mandando para os demais clientes
 		
 		for (ServerManager connectedClient: connectedClients) {
 			sb = new StringBuffer()

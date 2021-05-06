@@ -71,7 +71,7 @@ END$
 insert into mensagens(mensagem, id_usuario) values ("heheh testes e testes DELETE", 1);
 select * from mensagens;
 insert into usuarios(nome_completo, ativo, codigo) values ("Teste", false, "abc1234");
-
 SELECT mensagem FROM mensagens ORDER BY id DESC LIMIT 1;
 
-DELETE FROM mensagens where id > 0;
+DROP FUNCTION IF EXISTS REPLACE_RESTRICTED_WORDS;
+DROP TRIGGER IF EXISTS INSERTED_WITH_RESTRICTED_WORDS;

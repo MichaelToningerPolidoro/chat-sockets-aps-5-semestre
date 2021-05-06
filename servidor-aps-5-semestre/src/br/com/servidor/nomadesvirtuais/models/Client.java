@@ -10,6 +10,7 @@ import java.net.Socket;
 
 public class Client {
 
+	private int id;
 	private String name;
 	private Socket socket;
 	private BufferedReader reader;
@@ -43,6 +44,11 @@ public class Client {
 		}
 	}
 	
+	@Override
+	public String toString() {
+		return String.format("Nome: %s | id: %d", name, id);
+	}
+	
 	public String getName() {
 		return name;
 	}
@@ -57,5 +63,9 @@ public class Client {
 	
 	public PrintWriter getWriter() {
 		return writer;
+	}
+
+	public int getId() {
+		return id;
 	}
 }
