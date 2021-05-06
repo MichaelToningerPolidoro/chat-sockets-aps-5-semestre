@@ -6,8 +6,7 @@ public class Message {
 	private String message;
 	private String timeSent;
 	
-	public Message(String sender, String message, String timeSent) {
-		this.sender = sender;
+	public Message(String message, String timeSent) {
 		this.message = message;
 		this.timeSent = timeSent;
 	}

@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.servidor.nomadesvirtuais.database.DatabaseConnector;
+import br.com.servidor.nomadesvirtuais.database.DatabaseQueries;
 import br.com.servidor.nomadesvirtuais.models.Client;
+import br.com.servidor.nomadesvirtuais.models.Message;
 
 public class ServerManager extends Thread {
 
@@ -14,10 +16,8 @@ public class ServerManager extends Thread {
 	private static final List<ServerManager> connectedClients = 
 			new ArrayList<>();
 	
-	private static final Connection connection = 
-			DatabaseConnector.getConnection();
-	
-	// criar atributo que guarda um databaseQueries
+	private static final DatabaseQueries db =
+			new DatabaseQueries();
 	
 	public ServerManager(Client client) {
 		this.client = client;
@@ -27,14 +27,12 @@ public class ServerManager extends Thread {
 	}
 	
 	// Thread que realiza leitura/chegada das mensagens
-	// E distriui para os demais conectados
 	@Override
 	public void run() {
 		try {
 			while(true) {
-				String sender  = client.getName();
 				String message = client.getReader().readLine();
-				sendMessageToAllConnectedClients(sender, message);
+				sendMessageToAllConnectedClients(message);
 			}
 		} catch (SocketException e) {
 			//tratamento da exceção connection reset
@@ -45,25 +43,15 @@ public class ServerManager extends Thread {
 		}
 	}
 	
-	private void sendMessageToAllConnectedClients(String sender, String message) {
-		StringBuffer sb;
-//		Alterar recebimento desse método para String message
-//		chama o metodo que processa mensagem no BD
-//			passando (String message, int client.getId())
-//		Com isso é retornado um objeto de Message, contendo a mensagem e o horário.
-//		por fim é chamado o setSender(client.getName()) para definir quem está mandando e então
-//		realiza a iteração mandando para os demais clientes
+	private void sendMessageToAllConnectedClients(String message) {
+		message = db.processMessage(this.client, message);
 		
 		for (ServerManager connectedClient: connectedClients) {
-			sb = new StringBuffer()
-				.append(sender)
-				.append(": ")
-				.append(message)
-				.append("\n");
 			
-			connectedClient.getClient()
+			connectedClient
+				.getClient()
 				.getWriter()
-				.println(sb);
+				.println(message);
 		}
 	}
 

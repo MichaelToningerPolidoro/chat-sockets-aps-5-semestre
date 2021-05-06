@@ -10,7 +10,7 @@ import java.net.Socket;
 
 public class Client {
 
-	private int id;
+	private int id = 1;  //temporario
 	private String name;
 	private Socket socket;
 	private BufferedReader reader;
