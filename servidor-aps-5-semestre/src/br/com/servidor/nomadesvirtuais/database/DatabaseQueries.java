@@ -7,6 +7,7 @@ import java.sql.SQLException;
 
 import br.com.servidor.nomadesvirtuais.models.Client;
 import br.com.servidor.nomadesvirtuais.models.Message;
+import br.com.servidor.nomadesvirtuais.utils.MessageBuilder;
 
 public class DatabaseQueries {
 
@@ -39,30 +40,26 @@ public class DatabaseQueries {
 	}
 	
 	public Message getLastProcessedMessage() {
-		final int MENSAGEM_TABLE_INDEX = 1;
-		final int ENVIADOEM_TABLE_INDEX = 2;
 		String sql = "SELECT mensagem, enviado_em FROM mensagens ORDER BY id DESC LIMIT 1;";
-		String message = null;
-		String timeSent = null;
 		PreparedStatement stmt = null;
 		
 		try {
 			stmt = connection.prepareStatement(sql);
 			ResultSet result = stmt.executeQuery();
 			
-			if (result.next()) {
-				message = result.getString(MENSAGEM_TABLE_INDEX);
-				timeSent = result.getTime(ENVIADOEM_TABLE_INDEX).toString(); //hh:mm:ss				
-			}
+			Message buildedMessage = MessageBuilder.buildMessage(result);
 			
 			stmt.close();
 			result.close();
+			
+			return buildedMessage;
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
-		return new Message(message, timeSent);
+		//return new Message(message, timeSent);
+		return null;
 		
 	}
 	
