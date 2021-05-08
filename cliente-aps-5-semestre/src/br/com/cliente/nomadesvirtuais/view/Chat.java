@@ -5,6 +5,15 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -14,10 +23,18 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import br.com.cliente.nomadesvirtuais.utils.ConnectionHandle;
+
 public class Chat extends JFrame {
 	/**
-	 * 
+	 * TODO: Tentar pegar a conexão socket da outra tela (atributo estatico)
+	 * TODO: Lógica para escutar as mensagens do servidor e colocar na TextArea
+	 * assim que ela chegar
+	 * TODO: lógica nos botões
 	 */
+	
+	private PrintWriter writer;
+	
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField txtMensagem;
@@ -31,6 +48,10 @@ public class Chat extends JFrame {
 				try {
 					Chat frame = new Chat();
 					frame.setVisible(true);
+				} catch (UnknownHostException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -40,8 +61,15 @@ public class Chat extends JFrame {
 
 	/**
 	 * Create the frame.
+	 * @throws IOException 
+	 * @throws UnknownHostException 
 	 */
-	public Chat() {
+	public Chat() throws UnknownHostException, IOException {
+		ConnectionHandle.setConnection(new Socket("127.0.0.1", 3000));
+		
+		OutputStream os = ConnectionHandle.getConnection().getOutputStream();
+		writer = new PrintWriter(new OutputStreamWriter(os), true);
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -57,6 +85,7 @@ public class Chat extends JFrame {
 		JTextArea textArea = new JTextArea();
 		textArea.setForeground(new Color(45, 59, 72));
 		textArea.setFont(new Font("Arial", Font.PLAIN, 12));
+		textArea.setText("");
 		textArea.setEditable(false);
 		scrollPane.setViewportView(textArea);
 		
@@ -76,10 +105,30 @@ public class Chat extends JFrame {
 		btnNewButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.out.println("Teste");
+				String message = txtMensagem.getText().trim();
+				writer.println(message);
 			}
 		});
 		
 		contentPane.add(btnNewButton);
+		
+		//Thread para ler as mensagens vindas do servidor
+		new Thread() {
+			
+			@Override
+			public void run() {
+				try {
+					InputStream is = ConnectionHandle.getConnection().getInputStream();
+					BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+					while (true) {
+						String mensagem = reader.readLine().trim();
+						textArea.append("\n" + mensagem);
+					}
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}.start();
 	}
 }

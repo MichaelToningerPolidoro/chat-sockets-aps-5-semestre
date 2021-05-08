@@ -17,8 +17,14 @@ import javax.swing.border.EmptyBorder;
 
 public class Login extends JFrame {
 	/**
-	 * 
+	 * TODO: Criar uma classe que gerencia essa conexão com o server, assim o atributo de connection é estatico
+	 * e pode ser acessado pela classe do chat
+	 * TODO: criar lógica para enviar os dados de login
+	 * TODO: prosseguir para outra tela se o login for um sucesso
+	 * Não precisa fazer uma classe de modelo por que todos os objetos
+	 * e dados do cliente estão instanciados no lado do servidor
 	 */
+	
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField textField;
