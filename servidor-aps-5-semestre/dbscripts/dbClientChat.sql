@@ -38,15 +38,28 @@ INSERT INTO palavrasrestritas (palavra) VALUES
     ("insert"),
     ("delete"),
     ("datebayo");
+
+INSERT INTO usuarios(nome_completo, ativo, codigo) VALUES 
+	("Michael TP", false, "abc1234"),
+	("Lucas", false, "abcdefg"),
+	("Raquel", false, "1234567"),
+	("Marcelo", false, "1234abc");
     
-INSERT INTO usuarios(nome_completo, ativo, codigo) VALUES ("Michael TP", false, "abc1234");
-INSERT INTO usuarios(nome_completo, ativo, codigo) VALUES ("Lucas", false, "abcdefg");
-INSERT INTO usuarios(nome_completo, ativo, codigo) VALUES ("Raquel", false, "1234567");
-INSERT INTO usuarios(nome_completo, ativo, codigo) VALUES ("Marcelo", false, "1234abc");
+INSERT INTO senhas(id_usuario, senha) VALUES 
+	(1, "123"),
+	(2, "123"),
+    (3, "123"),
+    (4, "123");
+    
     
 SELECT * FROM palavrasrestritas;
 SELECT * FROM usuarios;
+SELECT * FROM senhas;
 SELECT * FROM mensagens;
+
+SELECT u.id, u.nome_completo FROM usuarios u, senhas s WHERE u.codigo = "abc1234" AND s.id_usuario = u.id;
+
+SELECT u.id, u.nome_completo FROM usuarios u WHERE codigo = "1234abc" AND (SELECT senha FROM senhas WHERE id_usuario = u.id) = "123";
 
 DELETE FROM mensagens where id > 0;
 

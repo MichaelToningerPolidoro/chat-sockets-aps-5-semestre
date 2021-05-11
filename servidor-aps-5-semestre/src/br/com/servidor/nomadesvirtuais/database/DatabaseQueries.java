@@ -58,7 +58,6 @@ public class DatabaseQueries {
 			e.printStackTrace();
 		}
 		
-		//return new Message(message, timeSent);
 		return null;
 		
 	}
@@ -69,13 +68,4 @@ public class DatabaseQueries {
 		processedMessage.setSender(client.getName());
 		return processedMessage.toString();
 	}
-	
-	public boolean login(String codigo, String password) {
-		// TODO: implementar método de login no projeto
-		// Realiza a busca do usuário no DB e retorna
-		// true se as informações forem válidas.
-		
-		return true;
-	}
-	
 }

@@ -10,20 +10,18 @@ import java.net.Socket;
 
 public class Client {
 
-	private int id = 1;  //temporario
+	private int id;
 	private String name;
 	private Socket socket;
 	private BufferedReader reader;
 	private PrintWriter writer;
 	
-	public Client(String name, Socket socket) {
+	public Client(int id, String name) {
+		this.id = id;
 		this.name = name;
-		this.socket = socket;
-		setReader();
-		setWriter();
 	}
 	
-	private void setReader() {
+	public void setReader() {
 		try {
 			InputStream is = this.getSocket().getInputStream();
 			this.reader = new BufferedReader(new InputStreamReader(is));
@@ -33,7 +31,7 @@ public class Client {
 		}
 	}
 	
-	private void setWriter() {
+	public void setWriter() {
 		try {
 			OutputStream os = this.getSocket().getOutputStream();
 			// parâmetro true é o shuffle, que realiza o envio automático da mensagem;
@@ -67,5 +65,13 @@ public class Client {
 
 	public int getId() {
 		return id;
+	}
+	
+	public void setSocket(Socket socket) {
+		this.socket = socket;
+	}
+	
+	public void setId(int id) {
+		this.id = id;
 	}
 }

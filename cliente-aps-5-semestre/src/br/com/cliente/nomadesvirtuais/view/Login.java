@@ -5,6 +5,15 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -16,14 +25,9 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 public class Login extends JFrame {
-	/**
-	 * TODO: Criar uma classe que gerencia essa conexão com o server, assim o atributo de connection é estatico
-	 * e pode ser acessado pela classe do chat
-	 * TODO: criar lógica para enviar os dados de login
-	 * TODO: prosseguir para outra tela se o login for um sucesso
-	 * Não precisa fazer uma classe de modelo por que todos os objetos
-	 * e dados do cliente estão instanciados no lado do servidor
-	 */
+	
+	private static final String URL = "127.0.0.1";
+	private static final int PORT = 3000;
 	
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -39,6 +43,10 @@ public class Login extends JFrame {
 				try {
 					Login frame = new Login();
 					frame.setVisible(true);
+				} catch (UnknownHostException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -48,8 +56,11 @@ public class Login extends JFrame {
 
 	/**
 	 * Create the frame.
+	 * @throws IOException 
+	 * @throws UnknownHostException 
 	 */
-	public Login() {
+	public Login() throws UnknownHostException, IOException {
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -95,7 +106,49 @@ public class Login extends JFrame {
 			
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.out.println("TEste");
+				try {
+					Socket socket = new Socket(URL, PORT);
+					
+					OutputStream os = socket.getOutputStream();
+					PrintWriter writer = new PrintWriter(new OutputStreamWriter(os), true);
+					
+					InputStream is = socket.getInputStream();
+					BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+					
+					// realiza a leitura das mensagens vindas do servidor
+					new Thread() {
+						@Override
+						public void run() {
+							while (true) {
+								try {
+									String login = reader.readLine();
+									
+									if (login.equals("ok")) {
+										new Chat(socket, writer, reader).setVisible(true);
+										dispose();
+										stop();
+									} else {
+										socket.close();
+										stop();
+									}
+									
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+							}
+						}
+						
+					}.start();
+					
+					String code = textField.getText();
+					String password = passwordField.getText();
+					writer.println(code + ";" + password);
+					
+				} catch (UnknownHostException e1) {
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 			}
 			
 		});

@@ -7,10 +7,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -23,8 +19,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import br.com.cliente.nomadesvirtuais.utils.ConnectionHandle;
-
 public class Chat extends JFrame {
 	/**
 	 * TODO: Tentar pegar a conexão socket da outra tela (atributo estatico)
@@ -33,7 +27,9 @@ public class Chat extends JFrame {
 	 * TODO: lógica nos botões
 	 */
 	
-	private PrintWriter writer;
+	private static Socket socket;
+	private static BufferedReader reader;
+	private static PrintWriter writer;
 	
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -46,7 +42,7 @@ public class Chat extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Chat frame = new Chat();
+					Chat frame = new Chat(null, null, null);
 					frame.setVisible(true);
 				} catch (UnknownHostException e) {
 					e.printStackTrace();
@@ -64,11 +60,13 @@ public class Chat extends JFrame {
 	 * @throws IOException 
 	 * @throws UnknownHostException 
 	 */
-	public Chat() throws UnknownHostException, IOException {
-		ConnectionHandle.setConnection(new Socket("127.0.0.1", 3000));
+	public Chat(Socket loginSocket, PrintWriter loginWriter, BufferedReader loginReader) 
+			throws UnknownHostException, IOException {
 		
-		OutputStream os = ConnectionHandle.getConnection().getOutputStream();
-		writer = new PrintWriter(new OutputStreamWriter(os), true);
+		socket = loginSocket;
+		writer = loginWriter;
+		reader = loginReader;
+		
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -106,29 +104,27 @@ public class Chat extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				String message = txtMensagem.getText().trim();
+				txtMensagem.setText("");
 				writer.println(message);
 			}
 		});
 		
 		contentPane.add(btnNewButton);
 		
-		//Thread para ler as mensagens vindas do servidor
+		// Realiza a leitura das mensagens vindas do servidor
 		new Thread() {
 			
 			@Override
 			public void run() {
-				try {
-					InputStream is = ConnectionHandle.getConnection().getInputStream();
-					BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-					while (true) {
-						String mensagem = reader.readLine().trim();
-						textArea.append("\n" + mensagem);
+				while (true) {
+					try {
+						String message = reader.readLine().trim();
+						textArea.append("\n" + message);
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
-					
-				} catch (Exception e) {
-					e.printStackTrace();
 				}
-			}
+			};
 		}.start();
 	}
 }
