@@ -61,6 +61,10 @@ SELECT u.id, u.nome_completo FROM usuarios u, senhas s WHERE u.codigo = "abc1234
 
 SELECT u.id, u.nome_completo FROM usuarios u WHERE codigo = "1234abc" AND (SELECT senha FROM senhas WHERE id_usuario = u.id) = "123";
 
+SELECT m.mensagem, m.enviado_em, u.nome_completo FROM mensagens m, usuarios u
+WHERE m.id_usuario = u.id AND m.enviado_em BETWEEN DATE_SUB(NOW(), INTERVAL 15 minute) AND NOW()
+ORDER BY m.enviado_em DESC LIMIT 20;
+
 DELETE FROM mensagens where id > 0;
 
 DROP TABLE IF EXISTS mensagens;

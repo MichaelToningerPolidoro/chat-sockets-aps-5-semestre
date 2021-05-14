@@ -15,7 +15,7 @@ public class Message {
 	public String toString() {
 		return new StringBuilder()
 				.append(sender)
-				.append(" às ")
+				.append(" em ")
 				.append(timeSent)
 				.append("\n")
 				.append(message)

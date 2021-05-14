@@ -20,12 +20,6 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 public class Chat extends JFrame {
-	/**
-	 * TODO: Tentar pegar a conexão socket da outra tela (atributo estatico)
-	 * TODO: Lógica para escutar as mensagens do servidor e colocar na TextArea
-	 * assim que ela chegar
-	 * TODO: lógica nos botões
-	 */
 	
 	private static Socket socket;
 	private static BufferedReader reader;
@@ -67,7 +61,7 @@ public class Chat extends JFrame {
 		writer = loginWriter;
 		reader = loginReader;
 		
-		
+		setTitle("Chat");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();

@@ -1,5 +1,6 @@
 package br.com.servidor.nomadesvirtuais;
 
+import java.io.PrintWriter;
 import java.net.SocketException;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public class ServerManager extends Thread {
 		this.client = client;
 		connectedClients.add(this);
 		System.out.println(String.format("Usuário conectado -> %s", this.client));
+		sendMessagesFrom10HoursAgo();
 		start();
 	}
 	
@@ -52,6 +54,16 @@ public class ServerManager extends Thread {
 				.getClient()
 				.getWriter()
 				.println(message);
+		}
+	}
+	
+	private void sendMessagesFrom10HoursAgo() {
+		List<String> messages= db.getMessagesFrom10HoursAgo();
+
+		if (messages.size() != 0) {
+			for (String msg: messages) {
+				this.client.getWriter().println(msg);
+			}
 		}
 	}
 
