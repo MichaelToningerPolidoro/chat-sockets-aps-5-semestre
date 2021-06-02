@@ -1,4 +1,4 @@
-# APS 5º Semestre
+<h1 align="center">APS 5º Semestre</h1>
 
 ***
 
@@ -7,14 +7,15 @@
   2. [Integrantes](#integrantes)
   3. [Tecnologias utilizadas](#tecnologias-utilizadas)
   4. [Conceitos aprendidos](#conceitos-aprendidos)
-  5. [Configurações necessárias](#configuracoes-necessarias)
+  5. [Como utilizar?](#como-utilizar)
 
 ***
 
 ## <a name="objetivo">1. Objetivo :dart:</a>
-  O projeto consiste na criação de um chat, utilizando sockets de rede. Ele possui
-  um sistema de login para usuários pré cadastrados, apto a conectar, enviar e receber 
-  mensangens dos clientes e também realizar uma tratativa de mensagens indesejadas.
+  O projeto consiste em um chat, utilizando sockets de rede. Ele possui
+  um sistema de login para usuários pré-cadastrados que estarão aptos a  se conectar, 
+  enviar e receber mensangens dos clientes. A aplicação também realiza uma tratativa
+  em mensagens indesejadas.
   <br/><br/>[Voltar ao índice](#indice)
 
 ## <a name="integrantes">2. Integrantes :sunglasses:</a>
@@ -37,15 +38,15 @@
   Um dos maiores aprendizados adquiridos nessa APS, foi realizar a troca de mensagens 
   em tempo real entre diversos computadores conectados em um servidor <br/>
   Mas, separando em tópicos:
-  - Sockets
+  - Conexão via Sockets
   - Objetos de I/O do Java para envio e recebimento das mensagens
-  - Realizar a tratativa de mensagens indesejadas
+  - Tratativa de mensagens indesejadas
   - Externalização de dados de conexão com o banco de dados, através de um arquivo properties
   <br/><br/>[Voltar ao índice](#indice)
   
-## <a name="configuracoes-necessarias">5. Configurações necessárias :memo:</a>
-  Algumas configurações são necessárias para o funcionamento do projeto, sendo elas:  
+## <a name="como-utilizar">5. Como utilizar? :memo:</a>
+  Algumas configurações são necessárias para a utilização do projeto, sendo:  
   - Criar aquivo database.properties no caminho `servidor-aps-5-semestre/src/database.properties`
-  - Adicionar propriedades com o seguinte formato `db.url`, `db.user`, `db.password`
+  - Adicionar propriedades `db.url`, `db.user`, `db.password` no arquivo `database.properties`
   
   <br></br>[Voltar ao índice](#indice)
