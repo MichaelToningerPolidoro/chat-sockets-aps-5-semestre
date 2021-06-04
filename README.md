@@ -47,6 +47,12 @@
 ## <a name="como-utilizar">5. Como utilizar? :memo:</a>
   Algumas configurações são necessárias para a utilização do projeto, sendo:  
   - Criar aquivo database.properties no caminho `servidor-aps-5-semestre/src/database.properties`
-  - Adicionar propriedades `db.url`, `db.user`, `db.password` no arquivo `database.properties`
+  - Adicionar propriedades no arquivo seguindo o exemplo abaixo
+  
+  ```properties
+    db.url=jdbc:mysql://localhost/nome-do-banco-de-dados
+    db.user=usuario
+    db.password=senha
+  ```
   
   <br></br>[Voltar ao índice](#indice)
